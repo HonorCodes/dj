@@ -1,4 +1,4 @@
-# dj
+# dj (claude)
 
 A Claude Code skill that turns Claude into a live electronic music DJ. Claude composes and performs music in real time, pushing patterns to the [Strudel](https://strudel.cc) REPL running in your browser.
 
