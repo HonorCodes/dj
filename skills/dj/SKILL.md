@@ -59,8 +59,9 @@ Use when the user requests a genre, mood, vibe, or "play me a set."
 1. Create `/tmp/dj-set/` directory
 2. Look up the genre's phase structure (each genre has its own -- see the genre template)
 3. Compose one file per phase (number varies by genre, typically 5-7)
-4. Push phases on a timed schedule in the background
-5. Stay responsive for mid-set feedback
+4. Compose a 4-bar transition bridge between each pair of adjacent phases
+5. Push the full chain (phases + transitions interleaved) on a timed schedule in the background
+6. Stay responsive for mid-set feedback
 
 ### Conversational Mode
 
@@ -79,11 +80,13 @@ Each genre defines its own phase structure with bar ranges. To execute a set:
 
 1. Look up the genre's phase table (in the genre template section below)
 2. Write one file per phase to `/tmp/dj-set/` (e.g., `01-intro.txt`, `02-groove.txt`, etc.)
-3. Calculate sleep duration per phase: `bars * (240 / BPM)` seconds
-4. Execute the chain in background
+3. Write a 4-bar transition bridge between every pair of adjacent phases (e.g., `01b-intro-to-groove.txt`). Each transition blends elements from both neighbors -- fade out departing layers, preview incoming layers, keep shared ambient layers. See Critical Rules for details.
+4. Calculate sleep duration: main phases use `bars * (240 / BPM)` seconds, transitions use `4 * (240 / BPM)` seconds
+5. Execute the full chain (phases + transitions interleaved) in background
 
-Example for a genre at 126 BPM with an 8-bar intro:
-- Sleep = 8 * (240 / 126) = 15.2 seconds
+Example for a genre at 126 BPM with an 8-bar intro and 8-bar groove:
+- Intro sleep = 8 * (240 / 126) = 15.2s
+- Transition sleep = 4 * (240 / 126) = 7.6s
 
 ```bash
 mkdir -p /tmp/dj-set && \
@@ -91,9 +94,12 @@ node <STRUDEL_PATH>/push-pattern.mjs \
   /tmp/dj-set/01-intro.txt && \
 sleep 15 && \
 node <STRUDEL_PATH>/push-pattern.mjs \
+  /tmp/dj-set/01b-intro-to-groove.txt && \
+sleep 8 && \
+node <STRUDEL_PATH>/push-pattern.mjs \
   /tmp/dj-set/02-groove.txt && \
 sleep <next_duration> && \
-# ... continue for all phases ...
+# ... continue for all phases + transitions ...
 ```
 
 Run this with `run_in_background: true` so you stay responsive.
@@ -1658,8 +1664,14 @@ $: s("bd*4").gain(.6).orbit(1)
 - **Never use `rand.range()` on gain.** Random volume per event causes audible skipping when values hit near-zero. Use fixed velocity patterns instead (e.g., `"[.3 .5 .4 .6]"`). `sine.range()` is acceptable because it oscillates smoothly and predictably.
 - **Lo-fi family: the beat never fully drops out.** In breakdowns, simplify the drum pattern or lower gain, but keep the beat playing. The beat drives lo-fi.
 - **Always `.hpf(80)` on drums** to keep sub frequencies clean for the bass. Apply to every kick, snare, clap, hat, rim, and percussion line.
-- **`.swing(N)` takes a subdivision integer** -- N = half the hat repetition count (`hh*8` -> `swing(4)`, `hh*16` -> `swing(8)`, `hh*4` -> `swing(2)`). Only apply swing to hi-hats, never to kick or snare. Never use fractional values like `.swing(.2)` -- that causes timing glitches.
+- **`.swing(N)` — HATS ONLY, INTEGER ONLY.** Fractional swing on kick/snare causes audible timing drift that makes the whole track sound broken. This is the #1 cause of "skipping" beats.
+  - N = half the hat repetition count: `hh*4` → `.swing(2)`, `hh*8` → `.swing(4)`, `hh*16` → `.swing(8)`
+  - **DO:** `.swing(4)` on `hh*8` lines only
+  - **DON'T:** `.swing(0.15)`, `.swing(.2)`, or ANY fractional value — causes timing glitches
+  - **DON'T:** `.swing()` on `bd`, `sd`, `cp`, `rim`, or any non-hat percussion — displaces the rhythmic foundation
+  - The kick and snare define the grid. The hats swing against it. Never the other way around.
 - **Use multi-cycle `<>` phrases** -- melodic elements (bass lines, melodies, arps) should have at least 4-cycle variation to avoid monotonous single-bar loops. Chord progressions already use `<>` in most templates. Exception: intentionally hypnotic genres (minimal techno, psytrance) can use 2-cycle variation.
+- **Mandatory transition bridges between phases.** Every phase change needs a 4-bar transition segment that blends elements from both sides. Hard cuts between phases sound disjointed. In the transition: keep shared layers (e.g., sea texture, crackle), fade out departing elements (lower gain, close filter), and preview incoming elements (ghost kick at half gain, melody hint with sparse notes, new hat density). Name files `01b-X-to-Y.txt` between `01-X.txt` and `02-Y.txt`. Exception: ambient/lo-fi ambient genres that use a single long-form pattern.
 
 ### Gain Staging
 
