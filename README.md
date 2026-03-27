@@ -35,23 +35,34 @@ Then just ask:
 
 ## Genres
 
-**House & Disco**
-- Deep house, tech house, minimal house, acid house, disco
+26 genres, each with its own phase structure and arrangement arc (no universal template -- every genre gets a purpose-built set structure).
 
-**Trance & Progressive**
-- Trance, progressive trance, psytrance, uplifting trance
+**House Family**
+- House, deep house, tech house, progressive house, acid house
 
-**Techno**
-- Techno, minimal techno, industrial techno, dub techno
+**Trance Family**
+- Trance, uplifting trance, psytrance
+
+**Techno Family**
+- Techno, minimal techno, melodic techno
 
 **Bass Music**
-- Drum and bass, dubstep, UK garage, jungle
+- Drum and bass, liquid DnB, dubstep, future bass
 
-**Breaks & Downtempo**
-- Breakbeat, trip-hop, downtempo, IDM
+**Breaks & Garage**
+- Breakbeat, UK garage, 2-step
 
-**Chill**
-- Lo-fi, ambient, chillwave, synthwave
+**Hard Dance**
+- Hardstyle
+
+**Retro**
+- Synthwave
+
+**Lo-fi Family**
+- Lo-fi hip hop, lo-fi house, lo-fi ambient, lo-fi beats, chillhop (all include vinyl crackle layer)
+
+**Ambient**
+- Ambient (single long-form pattern, no discrete phases)
 
 ## Mood Modifiers
 
@@ -98,10 +109,12 @@ Add a background atmosphere on top of any genre:
 ## How It Works
 
 1. The SSE relay server (`src/live-relay.mjs`) listens on port 4322
-2. Claude generates Strudel pattern code based on your prompt
+2. Claude generates Strudel pattern code using `setcpm(BPM/4)` tempo and `$:` per-layer syntax
 3. The code is pushed to the relay via HTTP POST
 4. The browser receives it over SSE and evaluates it in the Strudel REPL
 5. Music plays immediately -- transitions happen in real time
+
+In set mode, Claude looks up the genre's specific phase structure (each genre has its own arc -- house uses 7 phases, psytrance uses 6, ambient uses a single long-form pattern, etc.), writes one file per phase, and pushes them on a timed schedule.
 
 ## License
 
