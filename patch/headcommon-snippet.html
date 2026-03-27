@@ -1,0 +1,36 @@
+<!-- Live relay: receives code pushes via SSE -->
+<script is:inline>
+  (function() {
+    var es = new EventSource('http://localhost:4322/stream');
+    es.onopen = function() {
+      console.log('[live-relay] SSE connected to :4322');
+    };
+    es.onmessage = function(e) {
+      if (e.data === 'connected') return;
+      var code;
+      try { code = JSON.parse(e.data); } catch(err) { return; }
+      console.log('[live-relay] received ' + code.length + ' chars');
+      function tryEval() {
+        var sm = window.strudelMirror;
+        if (!sm) { setTimeout(tryEval, 500); return; }
+        var view = sm.editor;
+        if (view) {
+          view.dispatch({
+            changes: { from: 0, to: view.state.doc.length, insert: code }
+          });
+        }
+        setTimeout(function() {
+          sm.evaluate().then(function() {
+            console.log('[live-relay] evaluated');
+          }).catch(function(err) {
+            console.error('[live-relay] error:', err);
+          });
+        }, 50);
+      }
+      tryEval();
+    };
+    es.onerror = function() {
+      console.log('[live-relay] SSE reconnecting...');
+    };
+  })();
+</script>
