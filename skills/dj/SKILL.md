@@ -1127,55 +1127,70 @@ $: note("a4 c5 e5 a4 ~ e5 c5 a4")
 
 ### Lo-fi Hip Hop (78 BPM)
 
-Dusty, warm hip-hop beats with vinyl texture, jazzy chords, and a laid-back swing. Study music vibes.
+Dusty, warm hip-hop beats with vinyl texture, jazzy Rhodes chords, and a laid-back swing. Study music vibes. The beat is the backbone — it never fully drops out, even in breakdowns.
 
 **Phase Structure:**
 
 | Phase | Bars | Function |
 |-------|------|----------|
-| Intro | 1-8 | Crackle + sparse drums |
-| Main Groove | 9-24 | Full beat, chords, bass |
-| Breakdown | 25-32 | Strip to chords + crackle |
-| Variation | 33-48 | Modified groove |
-| Outro/Loop | 49-64 | Fade or loop back |
+| Intro | 1-8 | Beat + chords + crackle (no melody yet) |
+| Main Groove | 9-24 | Full beat, chords, bass, melody |
+| Breakdown | 25-32 | Beat mellows (simpler pattern, quieter), chords + melody float |
+| Variation | 33-48 | Beat returns full, different chord voicing or melody |
+| Outro/Loop | 49-64 | Beat continues, melody fades, filter closes on chords |
 
-**Instrument Palette:** EmuSP12 kick/snare with `.crush(8)`, hats with `.crush(8)` and `.swing(.2)`, gm_acoustic_bass, gm_vibraphone chords, vinyl crackle layer
+**Instrument Palette:** EmuSP12 kick/snare with `.crush(8)`, hats with fixed velocity pattern and `.swing(.2)`, gm_acoustic_bass, gm_electric_piano_1 (Rhodes) for chords, gm_vibraphone for melody, vinyl crackle layer
 
 ```strudel
 setcpm(78/4)
 
-$: s("bd ~ ~ [~ bd] ~ sd ~ ~")
+$: s("bd ~ bd ~")
   .bank("EmuSP12")
   .crush(8)
-  .gain(0.58)
+  .gain(0.55)
   .swing(0.2)
   .orbit(1)
 
-$: s("hh*4")
-  .gain(sine.range(0.08, 0.15).slow(4))
-  .crush(8)
+$: s("~ sd ~ sd")
+  .bank("EmuSP12")
+  .crush(6)
+  .gain(0.32)
   .swing(0.2)
   .orbit(1)
 
-$: note("c2 [~ c2] eb2 [~ g1]")
+$: s("hh*8")
+  .gain("[.3 .5 .4 .6 .3 .5 .35 .55]")
+  .bank("AkaiMPC60")
+  .crush(6)
+  .swing(0.2)
+  .orbit(1)
+
+$: note("c2 eb2 f2 g2")
   .s("gm_acoustic_bass")
+  .decay(.3).sustain(.4)
   .lpf(400)
-  .gain(0.38)
+  .gain(0.4)
   .orbit(2)
 
-$: note("<[c3,eb3,g3,bb3,d4] [f3,ab3,c4,eb4] [bb2,d3,f3,a3,c4] [eb3,g3,bb3,d4]>")
-  .s("gm_vibraphone")
-  .lpf(2000)
+$: note("<[c4,eb4,g4,bb4]!2 [f4,ab4,c5]!2>")
+  .s("gm_electric_piano_1")
+  .lpf(2500)
   .gain(0.2)
-  .room(0.3)
+  .room(0.4)
   .orbit(3)
 
-$: s("crackle*4").density(0.06)
+$: note("c5 ~ g4 ~ bb4 ~ ~ ~")
+  .s("gm_vibraphone")
+  .room(0.5)
+  .gain(0.35)
+  .orbit(3)
+
+$: s("crackle*4").density(0.08)
   .gain(0.25)
   .orbit(4)
 ```
 
-**Key rules:** everything is degraded -- use `.crush(8)` on drums. Use `.swing(.2)` on all percussion. Vinyl crackle layer is mandatory: `s("crackle*4").density(.06).gain(.25)`. Chords should be jazzy (9ths, 11ths). Bass is acoustic, not synth. Keep it warm and dusty.
+**Key rules:** The beat NEVER fully drops out — it drives lo-fi. In breakdowns, simplify the drum pattern or lower gain, but keep it playing. Use `.crush(6-8)` on drums. Use `.swing(.2)` on all percussion. Use fixed velocity patterns on hats (e.g., `"[.3 .5 .4 .6 .3 .5 .35 .55]"`), never `rand.range()` which can hit near-zero and cause audible skipping. Vinyl crackle layer is mandatory. Chords should be Rhodes (`gm_electric_piano_1`) with jazzy voicings (9ths, 11ths). Melody on vibraphone. Bass is acoustic, not synth.
 
 ### Lo-fi House (118 BPM)
 
@@ -1185,10 +1200,10 @@ Gritty, lo-fi take on house music with crushed drums, warm bass, and degraded te
 
 | Phase | Bars | Function |
 |-------|------|----------|
-| Intro | 1-8 | Crushed kick + crackle |
-| Warmth | 9-16 | Bass + hats enter |
+| Intro | 1-8 | Crushed kick + hats + crackle |
+| Warmth | 9-16 | Bass + pad enter |
 | Full | 17-32 | All layers, locked groove |
-| Breakdown | 33-40 | Strip to bass + crackle |
+| Breakdown | 33-40 | Beat mellows (simpler kick, quieter), bass + pad breathe |
 | Return | 41-56+ | Full groove returns |
 
 **Instrument Palette:** AkaiMPC60 kick with `.crush(6)`, EmuSP12 hats, sine bass (crushed), sawtooth stab (crushed), vinyl crackle layer
@@ -1285,9 +1300,9 @@ Warm, instrumental hip-hop beats with dusty drums, melodic piano, and a head-nod
 
 | Phase | Bars | Function |
 |-------|------|----------|
-| Intro | 1-8 | Crackle + sparse elements |
+| Intro | 1-8 | Beat + chords + crackle (no melody yet) |
 | Main Loop | 9-32 | Full beat, melody, bass |
-| Rest | 33-40 | Strip back, breathing room |
+| Rest | 33-40 | Beat mellows (quieter, simpler), melody floats |
 | Main Returns | 41-64+ | Loop returns with variation |
 
 **Instrument Palette:** AkaiMPC60 kick/snare (crushed), hats (crushed), gm_acoustic_bass, gm_acoustic_grand_piano melody, gm_electric_piano_1 chords, vinyl crackle layer
@@ -1300,9 +1315,9 @@ $: s("bd ~ ~ ~ ~ sd ~ ~")
   .crush(8)
   .gain(0.58).orbit(1)
 
-$: s("hh*<4 8 16>")
+$: s("hh*8")
   .crush(8)
-  .gain(sine.range(0.06, 0.14).slow(2))
+  .gain("[.3 .45 .35 .5 .3 .45 .4 .55]")
   .orbit(1)
 
 $: note("a1 ~ ~ a1 ~ ~ e1 ~")
@@ -1324,7 +1339,7 @@ $: s("crackle*4").density(0.06)
   .orbit(4)
 ```
 
-**Key rules:** use real instrument sounds (acoustic piano, acoustic bass). `.crush(8)` on drums, `.crush(10)` on melodic elements. Vinyl crackle layer is mandatory. The hats pattern should cycle through densities with `<4 8 16>` for variation. Keep it head-nodding.
+**Key rules:** The beat NEVER fully drops out. Use real instrument sounds (acoustic piano, acoustic bass). `.crush(8)` on drums, `.crush(10)` on melodic elements. Vinyl crackle layer is mandatory. Use fixed velocity patterns on hats, never `rand.range()`. Keep it head-nodding.
 
 ### Chillhop (85 BPM)
 
@@ -1334,10 +1349,10 @@ Jazz-influenced lo-fi with live-feeling drums, walking bass, and melodic solos. 
 
 | Phase | Bars | Function |
 |-------|------|----------|
-| Head | 1-4 | Theme stated |
+| Head | 1-4 | Beat + theme stated |
 | Main Groove | 5-16 | Full band, locked groove |
-| Solo | 17-24 | Lead instrument features |
-| Bridge | 25-32 | New harmonic territory |
+| Solo | 17-24 | Beat continues (lighter), lead features |
+| Bridge | 25-32 | New harmonic territory, beat steady |
 | Return | 33-48+ | Head returns, variations |
 
 **Instrument Palette:** AkaiMPC60 kick/snare, KorgM1 ride, gm_acoustic_bass, gm_vibraphone chords, gm_acoustic_guitar_nylon melody
@@ -1352,7 +1367,7 @@ $: s("bd ~ ~ [~ bd] ~ sd ~ ~")
   .orbit(1)
 
 $: s("hh*4").bank("KorgM1")
-  .gain(sine.range(0.08, 0.14).slow(4))
+  .gain("[.3 .45 .35 .5]")
   .swing(0.2)
   .orbit(1)
 
@@ -1534,6 +1549,11 @@ $: s("hh*2")
 ---
 
 ## Music Theory Reference
+
+### Critical Rules
+
+- **Never use `rand.range()` on gain.** Random volume per event causes audible skipping when values hit near-zero. Use fixed velocity patterns instead (e.g., `"[.3 .5 .4 .6]"`). `sine.range()` is acceptable because it oscillates smoothly and predictably.
+- **Lo-fi family: the beat never fully drops out.** In breakdowns, simplify the drum pattern or lower gain, but keep the beat playing. The beat drives lo-fi.
 
 ### Gain Staging
 
