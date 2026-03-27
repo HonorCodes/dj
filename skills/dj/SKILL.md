@@ -1589,6 +1589,68 @@ $: s("hh*2")
 
 ---
 
+## Production Techniques (Optional Toolkit)
+
+These are optional techniques to make sets more interesting. Don't use every trick in every song — pick 1-2 per set that fit the genre and moment. Think of these as seasoning, not the main course.
+
+### Ear Candy
+
+Small detail-layer sounds that make a track memorable. Not core elements — ornaments.
+
+**High-pitch accent:** A short-decay high note (bell, blip) with stereo delay, placed on beat 1 of a phrase. Use sparingly — once per 4-8 bars maximum. More impact when constrained.
+```strudel
+$: note("c6 ~ ~ ~ ~ ~ ~ ~").s("gm_glockenspiel").decay(.08).sustain(0).delay(.3).delaytime(.25).pan(0.7).gain(0.06).orbit(4)
+```
+
+**Arpeggio swell:** Take existing chord notes, transpose up 2 octaves, arpeggiate, with reverb/delay swelling in over time. Good for builds and transitions.
+```strudel
+$: note("{c5 e5 g5 b5 g5 e5}%8").s("triangle").decay(.08).sustain(0).room(sine.range(0, 0.6).slow(4)).gain(sine.range(0.02, 0.1).slow(4)).orbit(4)
+```
+
+### Groove Techniques
+
+**Humanization via `.late()`:** Instead of `.swing()`, use `.late()` with small values on individual elements for subtle timing variation that doesn't break the grid.
+```strudel
+$: s("hh*8").late("[0 .01 0 .008 0 .01 0 .012]")  // micro-timing variation
+```
+
+**Triplet feel:** Dividing beats into 3 instead of 2/4 for a shuffle/bounce quality. In Strudel, use groupings of 3:
+```strudel
+$: s("[hh hh hh]*4")  // triplet hats (12 hits per cycle vs 8 or 16)
+```
+
+**Offbeat emphasis:** Moving rhythmic accents to the "and" positions for forward propulsion. Essential in garage, reggae, funk:
+```strudel
+$: s("[~ hh]*4")  // pure offbeat hats
+$: note("[~ c4]*4").s("gm_electric_piano_1").decay(.08).sustain(0)  // offbeat stabs
+```
+
+### Harmonic Tricks
+
+**Minor 7th chords:** Adding the minor 7th to any chord softens harshness and adds jazz sophistication. Formula: root + 3 + 7 + 10 semitones. Use liberally in house, lo-fi, deep house. In Strudel, spell them out: `[c3,eb3,g3,bb3]` = Cm7.
+
+**Diminished passing chords:** Insert a diminished chord briefly (half a beat) between two chords for tension. Build one semitone below the target chord. Works surprisingly often even placed randomly.
+
+**Static melody over changing chords:** Keep melody notes fixed while chords change underneath — the same notes create different harmonic colors against each chord. Creates complexity without effort. Good for lo-fi and ambient.
+
+**Semitone slide:** Start a chord or note 1 semitone below target, glide up. Creates a jazz/blues lean. In Strudel, approximate with `.add(note("<-1 0>"))` on the first beat.
+
+### Arrangement Principles
+
+**The delete trick:** If a mix feels cluttered, remove elements rather than adding more. Before a drop, strip back to create contrast — silence is a dynamic tool. In set mode, breakdown phases should have significantly fewer layers than peak phases.
+
+**"Make do" rule:** Before searching for new sounds, try transforming existing elements: transpose up 2 octaves, arpeggiate, add effects. More cohesive results than introducing unrelated sounds.
+
+**Sidechain for clarity:** When kick and bass clash, use `.duckorbit()` to make the bass duck when the kick hits. Also works on pads to create rhythmic pumping:
+```strudel
+$: note("c2*4").s("sawtooth").lpf(400).gain(.4).duckorbit(1).orbit(2)
+$: s("bd*4").gain(.6).orbit(1)
+```
+
+**Mono compatibility:** Bass and kick should always be mono (center). Stereo width on pads and delays is fine, but check that removing stereo doesn't make elements disappear.
+
+---
+
 ## Music Theory Reference
 
 ### Critical Rules
