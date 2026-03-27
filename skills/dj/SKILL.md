@@ -114,7 +114,7 @@ Example: if user says "more bass" at 40s in and phases 1-3 have played, rewrite 
 
 ## Genre Templates
 
-Every template uses `setcpm(BPM/4)` for tempo and `$:` per-layer syntax with `.orbit(N)` assignments (drums=1, bass=2, melodic=3, FX=4). All gain values follow the gain staging table in the Music Theory Reference.
+Every template uses `setcps(BPM/60/4)` for tempo and `$:` per-layer syntax with `.orbit(N)` assignments (drums=1, bass=2, melodic=3, FX=4). All gain values follow the gain staging table in the Music Theory Reference.
 
 Adapt templates to the requested mood, then layer ambient effects on top if requested. These are starting points -- vary patterns across set phases.
 
@@ -137,17 +137,19 @@ Classic four-on-the-floor dance music with driving kick, offbeat hats, and filte
 **Instrument Palette:** kick (four-on-floor), clap (backbeat), hats (8th or 16th), sawtooth bass (filtered), sawtooth chord stabs
 
 ```strudel
-setcpm(126/4)
+setcps(126/60/4)
 
-$: s("bd*4").gain(0.65).orbit(1)
+$: s("bd*4").gain(0.65).hpf(80).orbit(1)
 
-$: s("~ cp ~ cp").gain(0.35).orbit(1)
+$: s("~ cp ~ cp").gain(0.35).hpf(80).orbit(1)
 
 $: s("hh*8")
   .gain(sine.range(0.1, 0.2).slow(2))
+  .hpf(80)
+  .swing(4)
   .orbit(1)
 
-$: note("g1 [~ g1] g1 [g1 ~]")
+$: note("<g1 [~ g1] g1 [g1 ~] g1 g1 [~ g1] [g1 ~] eb1 [~ eb1] g1 [g1 ~] g1 [g1 ~] eb1 [~ g1]>")
   .s("sawtooth")
   .lpf(500).lpq(6)
   .gain(0.4)
@@ -181,19 +183,20 @@ Warm, soulful house with jazzy chords, deep rolling bass, and a relaxed groove. 
 **Instrument Palette:** AkaiMPC60 kick, KorgM1 hats, gm_electric_bass_finger bass, gm_electric_piano_2 chords
 
 ```strudel
-setcpm(122/4)
+setcps(122/60/4)
 
 $: s("bd*4").bank("AkaiMPC60")
-  .gain(0.6).orbit(1)
+  .gain(0.6).hpf(80).orbit(1)
 
 $: s("~ cp ~ cp").gain(0.3)
-  .delay(0.1).orbit(1)
+  .hpf(80).delay(0.1).orbit(1)
 
 $: s("hh(5,8)").bank("KorgM1")
   .gain(sine.range(0.08, 0.18).slow(4))
+  .hpf(80)
   .orbit(1)
 
-$: note("c2 [~ c2] eb2 [~ g1]")
+$: note("<c2 [~ c2] eb2 [~ g1] c2 g1 eb2 [~ c2] eb2 [~ g1] c2 [c2 ~] c2 [~ eb2] g1 [~ c2]>")
   .s("gm_electric_bass_finger")
   .lpf(300)
   .gain(0.4)
@@ -227,28 +230,30 @@ Driving, groove-oriented house with punchy percussion, tight bass, and minimal m
 **Instrument Palette:** TR909 kick/clap/hats, rimshot, sawtooth bass (filtered), square stabs
 
 ```strudel
-setcpm(127/4)
+setcps(127/60/4)
 
 $: s("bd*4").bank("RolandTR909")
-  .gain(0.68).orbit(1)
+  .gain(0.68).hpf(80).orbit(1)
 
 $: s("~ [~ cp] ~ cp").bank("RolandTR909")
-  .gain(0.32).orbit(1)
+  .gain(0.32).hpf(80).orbit(1)
 
 $: s("hh*16").bank("RolandTR909")
   .gain(sine.range(0.08, 0.15).fast(2))
+  .hpf(80)
+  .swing(8)
   .orbit(1)
 
-$: s("rim(5,8)").gain(0.18).orbit(1)
+$: s("rim(5,8)").gain(0.18).hpf(80).orbit(1)
 
-$: note("g1*4")
+$: note("<g1*4 g1*4 g1 [~ g1] g1 [g1 ~] g1*4>")
   .s("sawtooth")
   .lpf(sine.range(300, 1200).slow(8))
   .lpq(8)
   .gain(0.4)
   .orbit(2)
 
-$: note("<[g3,bb3] ~ ~ ~>")
+$: note("<[g3,bb3] ~ ~ ~ [bb3,d4] ~ ~ ~ [g3,bb3] ~ ~ ~ [f3,a3] ~ ~ ~>")
   .s("square")
   .lpf(1500)
   .attack(0.01).release(0.1)
@@ -276,17 +281,19 @@ Evolving, melodic house with long builds, lush pads, and emotional arpeggiated l
 **Instrument Palette:** kick, clap, hats, triangle bass, supersaw pads (slow filter sweep), triangle arp with delay
 
 ```strudel
-setcpm(126/4)
+setcps(126/60/4)
 
-$: s("bd*4").gain(0.62).orbit(1)
+$: s("bd*4").gain(0.62).hpf(80).orbit(1)
 
-$: s("~ cp ~ cp").gain(0.3).orbit(1)
+$: s("~ cp ~ cp").gain(0.3).hpf(80).orbit(1)
 
 $: s("hh*8")
   .gain(sine.range(0.08, 0.16).slow(4))
+  .hpf(80)
+  .swing(4)
   .orbit(1)
 
-$: note("a1 [~ a1] e1 [~ a1]")
+$: note("<a1 [~ a1] e1 [~ a1] a1 e1 [~ a1] a1 e1 [~ e1] a1 [~ a1] a1 [~ a1] e1 [a1 ~]>")
   .s("triangle")
   .lpf(600)
   .gain(0.38)
@@ -299,7 +306,7 @@ $: note("<[a3,c4,e4] [f3,a3,c4] [c3,e3,g3] [g3,b3,d4]>")
   .room(0.4)
   .orbit(3)
 
-$: note("a4 e5 c5 e5 a4 c5 e5 g5")
+$: note("<[a4 e5 c5 e5 a4 c5 e5 g5] [c5 e5 a5 e5 c5 a4 e4 c5] [a4 c5 e5 ~ c5 a4 e5 g5] [e5 c5 a4 c5 e5 g5 a5 e5]>")
   .s("triangle")
   .delay(0.4).delaytime(0.234)
   .gain(0.15)
@@ -327,17 +334,19 @@ Raw, hypnotic house driven by the 303 acid bassline -- squelchy resonant filter 
 **Instrument Palette:** kick (four-on-floor), clap, hats, sawtooth bass with `.lpenv()` and high `.lpq()` (303 acid line)
 
 ```strudel
-setcpm(130/4)
+setcps(130/60/4)
 
-$: s("bd*4").gain(0.65).orbit(1)
+$: s("bd*4").gain(0.65).hpf(80).orbit(1)
 
-$: s("~ cp ~ cp").gain(0.3).orbit(1)
+$: s("~ cp ~ cp").gain(0.3).hpf(80).orbit(1)
 
 $: s("hh*8")
   .gain(sine.range(0.08, 0.15).slow(2))
+  .hpf(80)
+  .swing(4)
   .orbit(1)
 
-$: note("a1 [a1 a2] a1 [~ a2] a1 a1 [a2 a1] ~")
+$: note("<[a1 [a1 a2] a1 [~ a2] a1 a1 [a2 a1] ~] [a1 a1 [a2 ~] a1 [a1 a2] ~ a1 a2] [a1 [~ a2] a1 a1 [a2 a1] ~ a1 [a1 a2]] [~ a1 a2 a1 [a1 a2] a1 ~ [a2 a1]]>")
   .s("sawtooth")
   .lpf(sine.range(200, 3000).slow(4))
   .lpq(15)
@@ -368,17 +377,19 @@ Euphoric, melodic dance music with driving bass, supersaw pads, and soaring arp 
 **Instrument Palette:** kick (four-on-floor), clap (backbeat), hats, sawtooth bass (offbeat), supersaw pads, triangle arp lead with delay
 
 ```strudel
-setcpm(138/4)
+setcps(138/60/4)
 
-$: s("bd*4").gain(0.65).orbit(1)
+$: s("bd*4").gain(0.65).hpf(80).orbit(1)
 
-$: s("~ cp ~ cp").gain(0.35).orbit(1)
+$: s("~ cp ~ cp").gain(0.35).hpf(80).orbit(1)
 
 $: s("hh*8")
   .gain(sine.range(0.1, 0.2).slow(2))
+  .hpf(80)
+  .swing(4)
   .orbit(1)
 
-$: note("a1 ~ a1 ~ a1 ~ a1 ~")
+$: note("<a1 ~ a1 ~ a1 ~ a1 ~ a1 ~ a1 ~ e1 ~ a1 ~ a1 ~ e1 ~ a1 ~ a1 ~ e1 ~ e1 ~ a1 ~ a1 ~>")
   .s("sawtooth")
   .lpf(800).lpq(4)
   .gain(0.4)
@@ -392,7 +403,7 @@ $: note("<[a3,c4,e4] [f3,a3,c4] [c3,e3,g3] [g3,b3,d4]>")
   .room(0.3)
   .orbit(3)
 
-$: note("a4 c5 e5 a5 e5 c5 a4 e4")
+$: note("<[a4 c5 e5 a5 e5 c5 a4 e4] [e5 a5 c6 a5 e5 c5 a4 c5] [a4 e5 c5 e5 a5 e5 c5 a4] [c5 a4 e5 c5 a5 e5 a4 e4]>")
   .s("triangle")
   .delay(0.35).delaytime(0.217)
   .gain(0.2)
@@ -421,17 +432,19 @@ The most emotional trance subgenre -- soaring melodies, massive supersaw walls, 
 **Instrument Palette:** kick (four-on-floor), clap, hats, sawtooth bass (offbeat), supersaw pads (bright, wide), triangle arp lead with delay
 
 ```strudel
-setcpm(140/4)
+setcps(140/60/4)
 
-$: s("bd*4").gain(0.65).orbit(1)
+$: s("bd*4").gain(0.65).hpf(80).orbit(1)
 
-$: s("~ cp ~ cp").gain(0.35).orbit(1)
+$: s("~ cp ~ cp").gain(0.35).hpf(80).orbit(1)
 
 $: s("hh*8")
   .gain(sine.range(0.1, 0.2).slow(2))
+  .hpf(80)
+  .swing(4)
   .orbit(1)
 
-$: note("d2 ~ d2 ~ d2 ~ d2 ~")
+$: note("<d2 ~ d2 ~ d2 ~ d2 ~ d2 ~ d2 ~ a1 ~ d2 ~ d2 ~ a1 ~ d2 ~ d2 ~ a1 ~ a1 ~ d2 ~ d2 ~>")
   .s("sawtooth")
   .lpf(800).lpq(4)
   .gain(0.4)
@@ -445,7 +458,7 @@ $: note("<[d3,f#3,a3] [a3,c#4,e4] [b3,d4,f#4] [g3,b3,d4]>")
   .room(0.35)
   .orbit(3)
 
-$: note("d5 f#5 a5 d6 a5 f#5 d5 a4")
+$: note("<[d5 f#5 a5 d6 a5 f#5 d5 a4] [a5 d6 f#6 d6 a5 f#5 d5 f#5] [d5 a5 f#5 a5 d6 a5 f#5 d5] [f#5 d5 a5 f#5 d6 a5 d5 a4]>")
   .s("triangle")
   .delay(0.4).delaytime(0.214)
   .gain(0.2)
@@ -473,15 +486,17 @@ Hypnotic, relentless psychedelic trance with rolling 16th-note basslines, FM-mod
 **Instrument Palette:** kick (four-on-floor), 16th hats, sawtooth rolling 16th bass (high resonance), sawtooth+fm lead
 
 ```strudel
-setcpm(145/4)
+setcps(145/60/4)
 
-$: s("bd*4").gain(0.68).orbit(1)
+$: s("bd*4").gain(0.68).hpf(80).orbit(1)
 
 $: s("hh*16")
   .gain(sine.range(0.08, 0.14).slow(2))
+  .hpf(80)
+  .swing(8)
   .orbit(1)
 
-$: note("a1*16")
+$: note("<a1*16 [a1*8 [a1 a2]*4]>")
   .s("sawtooth")
   .lpf(sine.range(200, 2500).slow(4))
   .lpq(12)
@@ -516,20 +531,22 @@ Raw, industrial-influenced dance music. Distorted TR909, driving ride cymbal, an
 **Instrument Palette:** distorted TR909 kick/clap/hats, ride cymbal, sine sub bass, noise textures (industrial)
 
 ```strudel
-setcpm(130/4)
+setcps(130/60/4)
 
 $: s("bd*4").bank("RolandTR909")
   .distort(1.5)
-  .gain(0.7).orbit(1)
+  .gain(0.7).hpf(80).orbit(1)
 
 $: s("~ cp ~ ~").bank("RolandTR909")
-  .gain(0.35).orbit(1)
+  .gain(0.35).hpf(80).orbit(1)
 
 $: s("hh*16").bank("RolandTR909")
   .gain(sine.range(0.08, 0.18).fast(2))
+  .hpf(80)
+  .swing(8)
   .orbit(1)
 
-$: note("a0*4")
+$: note("<a0*4 a0*4 a0 [~ a0] a0 a0 a0*4>")
   .s("sine")
   .lpf(200)
   .gain(0.42)
@@ -562,19 +579,20 @@ Stripped-back techno with space, silence, and micro-variations. Less is more -- 
 **Instrument Palette:** TR707 kick, shaker, sine bass pulse, minimal stab (single note)
 
 ```strudel
-setcpm(126/4)
+setcps(126/60/4)
 
 $: s("bd ~ ~ ~ bd ~ ~ ~")
   .bank("RolandTR707")
-  .gain(0.55).orbit(1)
+  .gain(0.55).hpf(80).orbit(1)
 
-$: s("~ ~ rim ~").gain(0.18).orbit(1)
+$: s("~ ~ rim ~").gain(0.18).hpf(80).orbit(1)
 
 $: s("hh(5,8)")
   .gain(sine.range(0.05, 0.12).slow(4))
+  .hpf(80)
   .orbit(1)
 
-$: note("a0 ~ ~ ~ ~ ~ a0 ~")
+$: note("<a0 ~ ~ ~ ~ ~ a0 ~ a0 ~ ~ ~ a0 ~ ~ ~>")
   .s("sine")
   .lpf(180)
   .gain(0.35)
@@ -609,17 +627,19 @@ Cinematic, emotional techno with rolling 16th bass, ethereal pads, and soaring l
 **Instrument Palette:** kick, clap, hats, triangle rolling bass (16ths), gm_pad_4_choir pad, sawtooth cinematic lead with delay
 
 ```strudel
-setcpm(124/4)
+setcps(124/60/4)
 
-$: s("bd*4").gain(0.62).orbit(1)
+$: s("bd*4").gain(0.62).hpf(80).orbit(1)
 
-$: s("~ cp ~ ~").gain(0.3).orbit(1)
+$: s("~ cp ~ ~").gain(0.3).hpf(80).orbit(1)
 
 $: s("hh*8")
   .gain(sine.range(0.08, 0.16).slow(4))
+  .hpf(80)
+  .swing(4)
   .orbit(1)
 
-$: note("d2 [~ d2] a1 [~ d2]")
+$: note("<d2 [~ d2] a1 [~ d2] d2 a1 [~ d2] d2 a1 [~ a1] d2 [~ d2] d2 [~ d2] a1 [d2 ~]>")
   .s("triangle")
   .lpf(500)
   .gain(0.38)
@@ -633,7 +653,7 @@ $: note("<[d3,f3,a3,c4] [g3,bb3,d4,f4] [a3,c4,e4,g4] [f3,a3,c4,e4]>")
   .room(0.4)
   .orbit(3)
 
-$: note("d4 f4 a4 d5 a4 f4 d4 a3")
+$: note("<[d4 f4 a4 d5 a4 f4 d4 a3] [a4 d5 f5 d5 a4 f4 d4 f4] [d4 a4 f4 a4 d5 a4 f4 d4] [f4 d4 a4 f4 d5 a4 d4 a3]>")
   .s("sawtooth")
   .lpf(2500)
   .delay(0.3).delaytime(0.242)
@@ -662,24 +682,26 @@ High-energy breakbeat-driven music with chopped breaks, deep sub bass, and aggre
 **Instrument Palette:** AkaiMPC60 break (bd/sd pattern), 16th hats with degradeBy, sine sub + sawtooth reese with `.fm(2)`, sawtooth pads
 
 ```strudel
-setcpm(174/4)
+setcps(174/60/4)
 
 $: s("bd ~ ~ ~ ~ sd ~ ~ bd ~ ~ bd ~ sd ~ ~")
   .bank("AkaiMPC60")
-  .gain(0.65).orbit(1)
+  .gain(0.65).hpf(80).orbit(1)
 
 $: s("hh*16")
   .degradeBy(0.3)
   .gain(sine.range(0.08, 0.18).fast(2))
+  .hpf(80)
+  .swing(8)
   .orbit(1)
 
-$: note("a1*4")
+$: note("<a1*4 a1*4 a1 [~ a1] a1 a1 a1*4>")
   .s("sine")
   .lpf(200)
   .gain(0.4)
   .orbit(2)
 
-$: note("a1 ~ [~ a2] ~ a1 a2 [~ a1] ~")
+$: note("<[a1 ~ [~ a2] ~ a1 a2 [~ a1] ~] [a1 a2 [~ a1] ~ a1 ~ [a2 a1] ~] [a1 ~ a2 ~ [~ a1] a2 a1 ~] [~ a1 [a2 a1] ~ a1 ~ [~ a2] a1]>")
   .s("sawtooth")
   .fm(2)
   .add(note("0,0.1"))
@@ -688,7 +710,7 @@ $: note("a1 ~ [~ a2] ~ a1 a2 [~ a1] ~")
   .hpf(100)
   .orbit(2)
 
-$: note("<[a3,c4,e4] [f3,a3,c4]>")
+$: note("<[a3,c4,e4] [f3,a3,c4] [a3,c4,e4] [e3,g3,b3]>")
   .s("sawtooth")
   .lpf(2000)
   .attack(0.1).release(0.5)
@@ -716,17 +738,19 @@ Smooth, musical drum and bass with jazz-influenced chords, warm bass, and melodi
 **Instrument Palette:** LinnDrum break, hats, gm_synth_bass_2 bass, gm_electric_piano_1 chords, gm_violin lead with delay
 
 ```strudel
-setcpm(172/4)
+setcps(172/60/4)
 
 $: s("bd ~ ~ ~ ~ sd ~ ~ bd ~ ~ ~ ~ sd ~ ~")
   .bank("LinnDrum")
-  .gain(0.6).orbit(1)
+  .gain(0.6).hpf(80).orbit(1)
 
 $: s("hh*8")
   .gain(sine.range(0.08, 0.15).slow(2))
+  .hpf(80)
+  .swing(4)
   .orbit(1)
 
-$: note("d2*4")
+$: note("<d2*4 d2 [~ d2] d2 d2 d2*4 d2 d2 [~ a1] d2>")
   .s("gm_synth_bass_2")
   .lpf(250)
   .gain(0.38)
@@ -739,7 +763,7 @@ $: note("<[d3,f3,a3,c4] [g3,bb3,d4,f4] [c3,e3,g3,bb3] [f3,a3,c4,e4]>")
   .room(0.35)
   .orbit(3)
 
-$: note("d4 f4 a4 c5 a4 f4 d4 a3")
+$: note("<[d4 f4 a4 c5 a4 f4 d4 a3] [a4 d5 f5 d5 a4 f4 d4 f4] [d4 a4 f4 a4 c5 a4 f4 d4] [f4 d4 a4 f4 c5 a4 d4 a3]>")
   .s("gm_violin")
   .delay(0.3).delaytime(0.174)
   .gain(0.15)
@@ -767,29 +791,31 @@ Heavy, half-time bass music with massive wobble bass, sparse drums, and aggressi
 **Instrument Palette:** TR808 kick/snare, sparse hats with degradeBy, sawtooth wobble bass with LFO-driven `.lpf()` and high `.lpq()`, square pad
 
 ```strudel
-setcpm(140/4)
+setcps(140/60/4)
 
 $: s("bd ~ ~ ~ ~ ~ ~ ~")
   .bank("RolandTR808")
-  .gain(0.7).orbit(1)
+  .gain(0.7).hpf(80).orbit(1)
 
 $: s("~ ~ ~ ~ sd ~ ~ ~")
   .bank("RolandTR808")
-  .gain(0.38).orbit(1)
+  .gain(0.38).hpf(80).orbit(1)
 
 $: s("hh*8")
   .degradeBy(0.4)
   .gain(sine.range(0.06, 0.14).slow(2))
+  .hpf(80)
+  .swing(4)
   .orbit(1)
 
-$: note("a1*8")
+$: note("<[a1*8] [a1*4 [a1 a2]*2] [a1*8] [[a1 a2]*4]>")
   .s("sawtooth")
   .lpf(sine.range(80, 2000).fast(2))
   .lpq(15)
   .gain(0.4)
   .orbit(2)
 
-$: note("<[a2,c3,e3]>")
+$: note("<[a2,c3,e3] [a2,c3,e3] [f2,a2,c3] [a2,c3,e3]>")
   .s("square")
   .lpf(800)
   .attack(0.1).release(2)
@@ -818,17 +844,19 @@ Colorful, emotional bass music with lush supersaws, pitched 808 kicks, and alter
 **Instrument Palette:** TR808 kick with `.penv()`, clap, hats, supersaw chords (detuned), sine sub bass
 
 ```strudel
-setcpm(150/4)
+setcps(150/60/4)
 
 $: s("bd ~ ~ ~ ~ ~ ~ ~")
   .bank("RolandTR808")
   .penv(12).pdec(0.1)
-  .gain(0.6).orbit(1)
+  .gain(0.6).hpf(80).orbit(1)
 
-$: s("~ ~ ~ ~ sd ~ ~ ~").gain(0.35).orbit(1)
+$: s("~ ~ ~ ~ sd ~ ~ ~").gain(0.35).hpf(80).orbit(1)
 
 $: s("hh*4")
   .gain(sine.range(0.08, 0.15).slow(2))
+  .hpf(80)
+  .swing(2)
   .orbit(1)
 
 $: note("<[e3,g#3,b3,d#4] [a3,c#4,e4,g#4] [f#3,a#3,c#4,e#4] [b3,d#4,f#4,a#4]>")
@@ -840,7 +868,7 @@ $: note("<[e3,g#3,b3,d#4] [a3,c#4,e4,g#4] [f#3,a#3,c#4,e#4] [b3,d#4,f#4,a#4]>")
   .room(0.3)
   .orbit(3)
 
-$: note("e2 ~ ~ ~ b1 ~ ~ ~")
+$: note("<e2 ~ ~ ~ b1 ~ ~ ~ e2 ~ b1 ~ ~ ~ e2 ~ b1 ~ ~ ~ e2 ~ ~ ~ e2 ~ ~ ~ b1 ~ ~ ~>")
   .s("sine")
   .lpf(300)
   .gain(0.38)
@@ -866,23 +894,25 @@ Broken, syncopated rhythms with punchy drums, distorted bass, and raw energy. Th
 **Instrument Palette:** syncopated kick/snare, hats, sawtooth bass (filtered, punchy), sawtooth stab chords
 
 ```strudel
-setcpm(135/4)
+setcps(135/60/4)
 
-$: s("bd ~ ~ bd ~ ~ bd ~").gain(0.65).orbit(1)
+$: s("bd ~ ~ bd ~ ~ bd ~").gain(0.65).hpf(80).orbit(1)
 
-$: s("~ ~ sd ~ ~ sd ~ ~").gain(0.35).orbit(1)
+$: s("~ ~ sd ~ ~ sd ~ ~").gain(0.35).hpf(80).orbit(1)
 
 $: s("hh*8")
   .gain(sine.range(0.1, 0.2).slow(2))
+  .hpf(80)
+  .swing(4)
   .orbit(1)
 
-$: note("d2 [~ d2] ~ d2 [~ d3] d2 ~ d2")
+$: note("<[d2 [~ d2] ~ d2 [~ d3] d2 ~ d2] [d2 ~ d2 [d2 ~] d3 ~ d2 ~] [~ d2 [~ d3] d2 ~ d2 [d2 ~] d2] [d2 d2 ~ [~ d3] d2 ~ d2 [~ d2]]>")
   .s("sawtooth")
   .lpf(900).lpq(4)
   .gain(0.4)
   .orbit(2)
 
-$: note("<[d3,f3,a3,c4] [g3,bb3,d4]>")
+$: note("<[d3,f3,a3,c4] [g3,bb3,d4] [d3,f3,a3,c4] [a3,c4,e4]>")
   .s("sawtooth")
   .lpf(2000)
   .attack(0.01).release(0.1)
@@ -906,23 +936,24 @@ Shuffled, swung dance music with 2-step rhythms, warm bass, and soulful chord pa
 | Breakdown | 33-40 | Strip to pads |
 | Drop | 41-56+ | Full energy return |
 
-**Instrument Palette:** shuffled kick, snare with `.swing(.2)`, 16th hats with `.swing(.2)`, sine bass (filtered), gm_electric_piano_1 pads
+**Instrument Palette:** shuffled kick, snare, 16th hats with `.swing(8)`, sine bass (filtered), gm_electric_piano_1 pads
 
 ```strudel
-setcpm(132/4)
+setcps(132/60/4)
 
-$: s("bd ~ [~ bd] ~").gain(0.62).orbit(1)
+$: s("bd ~ [~ bd] ~").gain(0.62).hpf(80).orbit(1)
 
 $: s("~ sd ~ sd").gain(0.32)
-  .swing(0.2)
+  .hpf(80)
   .orbit(1)
 
 $: s("hh*16")
   .gain(sine.range(0.08, 0.18).slow(2))
-  .swing(0.2)
+  .hpf(80)
+  .swing(8)
   .orbit(1)
 
-$: note("g1 ~ [~ g2] ~ g1 [~ g1] ~ g2")
+$: note("<[g1 ~ [~ g2] ~ g1 [~ g1] ~ g2] [g1 [~ g2] g1 ~ [~ g1] g2 ~ g1] [g1 ~ g2 ~ g1 [g1 ~] ~ g2] [~ g1 [~ g2] g1 ~ g2 [~ g1] ~]>")
   .s("sine")
   .lpf(sine.range(200, 600).slow(4))
   .gain(0.4)
@@ -936,7 +967,7 @@ $: note("<[g3,bb3,d4,f4] [c3,eb3,g3,bb3] [eb3,g3,bb3,d4] [f3,a3,c4,eb4]>")
   .orbit(3)
 ```
 
-**Key rules:** swing is mandatory on snare and hats -- use `.swing(.2)`. The 2-step kick pattern (not four-on-floor) is essential. Chords should be warm and soulful (electric piano). Bass follows the shuffled groove.
+**Key rules:** swing is applied to hats only -- use `.swing(8)` for `hh*16`. The 2-step kick pattern (not four-on-floor) is essential. Chords should be warm and soulful (electric piano). Bass follows the shuffled groove.
 
 ### 2-Step (134 BPM)
 
@@ -952,35 +983,36 @@ Minimal, skippy UK dance music with broken kick patterns, tight swing, and spars
 | Breakdown | 33-40 | Strip back |
 | Full | 41-56+ | Complete track |
 
-**Instrument Palette:** skippy kick, snare with `.swing(.2)`, rimshot with `.swing(.2)`, hats with `.swing(.2)`, sine bass, sawtooth pad
+**Instrument Palette:** skippy kick, snare, rimshot, hats with `.swing(4)`, sine bass, sawtooth pad
 
 ```strudel
-setcpm(134/4)
+setcps(134/60/4)
 
-$: s("bd ~ [~ bd] ~").gain(0.6).orbit(1)
+$: s("bd ~ [~ bd] ~").gain(0.6).hpf(80).orbit(1)
 
 $: s("~ sd ~ sd")
   .gain(0.3)
-  .swing(0.2)
+  .hpf(80)
   .orbit(1)
 
 $: s("rim(3,8)")
   .gain(0.15)
-  .swing(0.2)
+  .hpf(80)
   .orbit(1)
 
 $: s("hh*8")
   .gain(sine.range(0.08, 0.16).slow(4))
-  .swing(0.2)
+  .hpf(80)
+  .swing(4)
   .orbit(1)
 
-$: note("c2 ~ [~ c2] ~ c2 [~ eb2] ~ ~")
+$: note("<[c2 ~ [~ c2] ~ c2 [~ eb2] ~ ~] [c2 [~ eb2] c2 ~ [~ c2] eb2 ~ c2] [c2 ~ eb2 ~ c2 [c2 ~] ~ eb2] [~ c2 [~ eb2] c2 ~ eb2 [~ c2] ~]>")
   .s("sine")
   .lpf(350)
   .gain(0.38)
   .orbit(2)
 
-$: note("<[c3,eb3,g3,bb3] [f3,ab3,c4,eb4]>")
+$: note("<[c3,eb3,g3,bb3] [f3,ab3,c4,eb4] [c3,eb3,g3,bb3] [ab3,c4,eb4,g4]>")
   .s("sawtooth")
   .lpf(2000)
   .attack(0.1).release(0.6)
@@ -989,7 +1021,7 @@ $: note("<[c3,eb3,g3,bb3] [f3,ab3,c4,eb4]>")
   .orbit(3)
 ```
 
-**Key rules:** the skippy, broken kick pattern defines 2-step. Use `.swing(.2)` on all percussion elements. Keep it minimal -- each element needs space. Bass is deep and round.
+**Key rules:** the skippy, broken kick pattern defines 2-step. Use `.swing(4)` on hats (`hh*8`), never on kick or snare. Keep it minimal -- each element needs space. Bass is deep and round.
 
 ### Hardstyle (150 BPM)
 
@@ -1009,21 +1041,21 @@ Aggressive dance music defined by the distorted, pitch-bent kick and reverse bas
 **Instrument Palette:** distorted kick with `.distort(4).penv(24).pdec(.15)`, reverse bass (sawtooth, distorted), square lead (filtered, distorted)
 
 ```strudel
-setcpm(150/4)
+setcps(150/60/4)
 
 $: s("bd*4")
   .distort(4)
   .penv(24).pdec(0.15)
-  .gain(0.7).orbit(1)
+  .gain(0.7).hpf(80).orbit(1)
 
-$: note("~ a1 ~ a1 ~ a1 ~ a1")
+$: note("<[~ a1 ~ a1 ~ a1 ~ a1] [~ a1 ~ a1 ~ e1 ~ a1] [~ a1 ~ e1 ~ a1 ~ a1] [~ e1 ~ a1 ~ a1 ~ a1]>")
   .s("sawtooth")
   .distort(4)
   .lpf(1000)
   .gain(0.38)
   .orbit(2)
 
-$: note("a3 ~ ~ ~ [a4 c5] ~ ~ ~")
+$: note("<[a3 ~ ~ ~ [a4 c5] ~ ~ ~] [a3 ~ ~ ~ [a4 e5] ~ ~ ~] [a3 ~ [a4 c5] ~ ~ ~ a3 ~] [~ ~ a3 ~ [a4 c5] ~ ~ a3]>")
   .s("square")
   .lpf(3000).lpq(8)
   .distort(2)
@@ -1042,7 +1074,7 @@ Drifting, atmospheric soundscapes with no beat. Slow-evolving pads, sparse melod
 **Instrument Palette:** sine pads (long attack/release), triangle melodic fragments (delayed, reverbed), sine sub drone
 
 ```strudel
-setcpm(75/4)
+setcps(75/60/4)
 
 $: note("<[c3,e3,g3,b3] [f3,a3,c4,e4] [g3,b3,d4,f#4] [d3,f#3,a3,c#4]>")
   .s("sine")
@@ -1052,7 +1084,7 @@ $: note("<[c3,e3,g3,b3] [f3,a3,c4,e4] [g3,b3,d4,f#4] [d3,f#3,a3,c#4]>")
   .room(0.9).rsize(8)
   .orbit(3)
 
-$: note("e4 ~ b4 ~ g4 ~ ~ e5")
+$: note("<[e4 ~ b4 ~ g4 ~ ~ e5] [b4 ~ g4 ~ e4 ~ ~ b3] [g4 ~ e5 ~ ~ b4 ~ g4] [e5 ~ ~ g4 b4 ~ e4 ~]>")
   .s("triangle")
   .attack(0.5).release(2)
   .delay(0.5).delaytime(0.4)
@@ -1060,7 +1092,7 @@ $: note("e4 ~ b4 ~ g4 ~ ~ e5")
   .room(0.8).rsize(6)
   .orbit(4)
 
-$: note("c1")
+$: note("<c1 c1 g0 c1>")
   .s("sine")
   .attack(1).release(4)
   .lpf(100)
@@ -1090,17 +1122,19 @@ Retro-futuristic 80s-inspired electronic music with analog synths, driving bass,
 **Instrument Palette:** kick, clap, hats, sawtooth bass (filtered), supersaw pads, square arp lead with delay
 
 ```strudel
-setcpm(108/4)
+setcps(108/60/4)
 
-$: s("bd*4").gain(0.6).orbit(1)
+$: s("bd*4").gain(0.6).hpf(80).orbit(1)
 
-$: s("~ cp ~ cp").gain(0.3).orbit(1)
+$: s("~ cp ~ cp").gain(0.3).hpf(80).orbit(1)
 
 $: s("hh*8")
   .gain(sine.range(0.08, 0.16).slow(4))
+  .hpf(80)
+  .swing(4)
   .orbit(1)
 
-$: note("a1 [~ a1] e1 [~ a1]")
+$: note("<a1 [~ a1] e1 [~ a1] a1 e1 [~ a1] a1 e1 [~ e1] a1 [~ a1] a1 [~ a1] e1 [a1 ~]>")
   .s("sawtooth")
   .lpf(600).lpq(4)
   .gain(0.4)
@@ -1114,7 +1148,7 @@ $: note("<[a3,c4,e4] [f3,a3,c4] [d3,f3,a3] [e3,g3,b3]>")
   .room(0.3)
   .orbit(3)
 
-$: note("a4 c5 e5 a4 ~ e5 c5 a4")
+$: note("<[a4 c5 e5 a4 ~ e5 c5 a4] [e5 a4 c5 e5 a4 ~ c5 e5] [a4 ~ c5 e5 a4 c5 ~ a4] [c5 e5 a4 ~ e5 c5 a4 e5]>")
   .s("square")
   .lpf(2500)
   .delay(0.3).delaytime(0.278)
@@ -1139,58 +1173,60 @@ Dusty, warm hip-hop beats with vinyl texture, jazzy Rhodes chords, and a laid-ba
 | Variation | 33-48 | Beat returns full, different chord voicing or melody |
 | Outro/Loop | 49-64 | Beat continues, melody fades, filter closes on chords |
 
-**Instrument Palette:** EmuSP12 kick/snare with `.crush(8)`, hats with fixed velocity pattern and `.swing(.2)`, gm_acoustic_bass, gm_electric_piano_1 (Rhodes) for chords, gm_vibraphone for melody, vinyl crackle layer
+**Instrument Palette:** EmuSP12 kick/snare with `.crush(8-10)`, hats with fixed velocity pattern and `.swing(4)`, gm_acoustic_bass, gm_electric_piano_1 (Rhodes) for chords, gm_vibraphone for melody, vinyl crackle layer
 
 ```strudel
-setcpm(78/4)
+setcps(78/60/4)
 
-$: s("bd ~ bd ~")
+$: s("bd ~ ~ ~ bd ~ ~ ~")
   .bank("EmuSP12")
-  .crush(8)
-  .gain(0.55)
-  .swing(0.2)
+  .crush(10)
+  .gain(0.35)
+  .lpf(2000).hpf(80)
   .orbit(1)
 
 $: s("~ sd ~ sd")
   .bank("EmuSP12")
-  .crush(6)
-  .gain(0.32)
-  .swing(0.2)
+  .crush(8)
+  .gain(0.18)
+  .lpf(3000).hpf(80)
   .orbit(1)
 
 $: s("hh*8")
-  .gain("[.3 .5 .4 .6 .3 .5 .35 .55]")
+  .gain("[.2 .32 .25 .38 .2 .32 .28 .35]")
   .bank("AkaiMPC60")
-  .crush(6)
-  .swing(0.2)
+  .crush(10)
+  .swing(4)
+  .lpf(4000).hpf(80)
   .orbit(1)
 
-$: note("c2 eb2 f2 g2")
+$: note("<c2 c2 eb2 g1>")
   .s("gm_acoustic_bass")
-  .decay(.3).sustain(.4)
-  .lpf(400)
-  .gain(0.4)
+  .attack(0.08).decay(0.4).sustain(0.3)
+  .lpf(300)
+  .gain(0.5)
   .orbit(2)
 
-$: note("<[c4,eb4,g4,bb4]!2 [f4,ab4,c5]!2>")
+$: note("<[c4,eb4,g4,bb4] [c4,eb4,g4,bb4] [ab3,c4,eb4,g4] [bb3,d4,f4,ab4]>")
   .s("gm_electric_piano_1")
-  .lpf(2500)
-  .gain(0.2)
+  .lpf(1800)
+  .gain(0.15)
   .room(0.4)
   .orbit(3)
 
-$: note("c5 ~ g4 ~ bb4 ~ ~ ~")
+$: note("<[g4 ~ eb4 ~ c4 ~ ~ bb3] [eb4 ~ c4 ~ bb3 ~ ~ g3] [c4 ~ g4 ~ ~ eb4 ~ c4] [g4 ~ ~ eb4 c4 ~ bb3 ~]>")
   .s("gm_vibraphone")
   .room(0.5)
-  .gain(0.35)
+  .gain(0.18)
+  .lpf(3000)
   .orbit(3)
 
 $: s("crackle*4").density(0.08)
-  .gain(0.25)
+  .gain(0.2)
   .orbit(4)
 ```
 
-**Key rules:** The beat NEVER fully drops out — it drives lo-fi. In breakdowns, simplify the drum pattern or lower gain, but keep it playing. Use `.crush(6-8)` on drums. Use `.swing(.2)` on all percussion. Use fixed velocity patterns on hats (e.g., `"[.3 .5 .4 .6 .3 .5 .35 .55]"`), never `rand.range()` which can hit near-zero and cause audible skipping. Vinyl crackle layer is mandatory. Chords should be Rhodes (`gm_electric_piano_1`) with jazzy voicings (9ths, 11ths). Melody on vibraphone. Bass is acoustic, not synth.
+**Key rules:** The beat NEVER fully drops out -- it drives lo-fi. Kick should be spaced (`bd ~ ~ ~ bd ~ ~ ~`), not four-on-floor. HPF 80 on all drums to clear sub for bass. Gain levels: kick .35, snare .18, hats .20-.38, bass .50, rhodes .15, vibes .18. Everything low-passed for warmth (drums at 2000-4000, rhodes at 1800, vibes at 3000). Use `setcps(78/60/4)` not `setcpm(78/4)`. Use `.crush(8-10)` on drums. Use `.swing(4)` on hats (`hh*8`), never on kick or snare. Use fixed velocity patterns on hats (e.g., `"[.2 .32 .25 .38 .2 .32 .28 .35]"`), never `rand.range()` which can hit near-zero and cause audible skipping. Vinyl crackle layer is mandatory. Chords should be Rhodes (`gm_electric_piano_1`) with jazzy voicings (9ths, 11ths). Melody on vibraphone. Bass is acoustic, not synth.
 
 ### Lo-fi House (118 BPM)
 
@@ -1209,29 +1245,31 @@ Gritty, lo-fi take on house music with crushed drums, warm bass, and degraded te
 **Instrument Palette:** AkaiMPC60 kick with `.crush(6)`, EmuSP12 hats, sine bass (crushed), sawtooth stab (crushed), vinyl crackle layer
 
 ```strudel
-setcpm(118/4)
+setcps(118/60/4)
 
 $: s("bd*4").bank("AkaiMPC60")
   .crush(6)
-  .gain(0.6).orbit(1)
+  .gain(0.6).hpf(80).orbit(1)
 
 $: s("~ cp ~ cp")
   .crush(6)
-  .gain(0.28).orbit(1)
+  .gain(0.28).hpf(80).orbit(1)
 
 $: s("hh*8").bank("EmuSP12")
   .crush(6)
   .gain(sine.range(0.08, 0.15).slow(4))
+  .hpf(80)
+  .swing(4)
   .orbit(1)
 
-$: note("c2 [~ c2] c2 [c2 ~]")
+$: note("<[c2 [~ c2] c2 [c2 ~]] [c2 c2 [~ eb2] c2] [c2 [~ c2] eb2 [c2 ~]] [eb2 [~ c2] c2 [~ c2]]>")
   .s("sine")
   .lpf(350)
   .crush(10)
   .gain(0.38)
   .orbit(2)
 
-$: note("<[c3,eb3,g3] [f3,ab3,c4]>")
+$: note("<[c3,eb3,g3] [f3,ab3,c4] [c3,eb3,g3] [ab3,c4,eb4]>")
   .s("sawtooth")
   .lpf(1200)
   .crush(8)
@@ -1255,9 +1293,9 @@ Degraded, texture-heavy ambient with crushed pads, granular fragments, and vinyl
 **Instrument Palette:** sine pads (crushed, long attack/release), triangle fragments (crushed, chopped, delayed), sine sub drone (crushed), vinyl crackle layer
 
 ```strudel
-setcpm(70/4)
+setcps(70/60/4)
 
-$: note("<[c3,e3,g3,b3] [f3,a3,c4,e4] [g3,b3,d4,f#4]>")
+$: note("<[c3,e3,g3,b3] [f3,a3,c4,e4] [g3,b3,d4,f#4] [d3,f#3,a3,c#4]>")
   .s("sine")
   .attack(2).release(4)
   .lpf(1500)
@@ -1266,7 +1304,7 @@ $: note("<[c3,e3,g3,b3] [f3,a3,c4,e4] [g3,b3,d4,f#4]>")
   .room(0.9).rsize(8)
   .orbit(3)
 
-$: note("e4 ~ ~ b4 ~ ~ g4 ~")
+$: note("<[e4 ~ ~ b4 ~ ~ g4 ~] [b4 ~ ~ g4 ~ ~ e4 ~] [g4 ~ ~ e5 ~ ~ b4 ~] [e5 ~ ~ g4 ~ ~ b3 ~]>")
   .s("triangle")
   .attack(1).release(3)
   .crush(10)
@@ -1276,7 +1314,7 @@ $: note("e4 ~ ~ b4 ~ ~ g4 ~")
   .room(0.8)
   .orbit(4)
 
-$: note("c1")
+$: note("<c1 c1 g0 c1>")
   .s("sine")
   .attack(2).release(4)
   .lpf(80)
@@ -1308,25 +1346,27 @@ Warm, instrumental hip-hop beats with dusty drums, melodic piano, and a head-nod
 **Instrument Palette:** AkaiMPC60 kick/snare (crushed), hats (crushed), gm_acoustic_bass, gm_acoustic_grand_piano melody, gm_electric_piano_1 chords, vinyl crackle layer
 
 ```strudel
-setcpm(82/4)
+setcps(82/60/4)
 
 $: s("bd ~ ~ ~ ~ sd ~ ~")
   .bank("AkaiMPC60")
   .crush(8)
-  .gain(0.58).orbit(1)
+  .gain(0.58).hpf(80).orbit(1)
 
 $: s("hh*8")
   .crush(8)
   .gain("[.3 .45 .35 .5 .3 .45 .4 .55]")
+  .hpf(80)
+  .swing(4)
   .orbit(1)
 
-$: note("a1 ~ ~ a1 ~ ~ e1 ~")
+$: note("<[a1 ~ ~ a1 ~ ~ e1 ~] [a1 ~ e1 ~ ~ a1 ~ ~] [a1 ~ ~ a1 ~ e1 ~ a1] [e1 ~ a1 ~ ~ ~ a1 ~]>")
   .s("gm_acoustic_bass")
   .lpf(300)
   .gain(0.38)
   .orbit(2)
 
-$: note("a3 c4 ~ e4 ~ a3 ~ c4")
+$: note("<[a3 c4 ~ e4 ~ a3 ~ c4] [c4 e4 ~ a3 ~ c4 ~ e4] [a3 ~ e4 ~ c4 ~ a3 ~] [e4 ~ a3 c4 ~ e4 ~ a3]>")
   .s("gm_acoustic_grand_piano")
   .lpf(1500)
   .crush(10)
@@ -1358,20 +1398,21 @@ Jazz-influenced lo-fi with live-feeling drums, walking bass, and melodic solos. 
 **Instrument Palette:** AkaiMPC60 kick/snare, KorgM1 ride, gm_acoustic_bass, gm_vibraphone chords, gm_acoustic_guitar_nylon melody
 
 ```strudel
-setcpm(85/4)
+setcps(85/60/4)
 
 $: s("bd ~ ~ [~ bd] ~ sd ~ ~")
   .bank("AkaiMPC60")
   .gain(0.55)
-  .swing(0.2)
+  .hpf(80)
   .orbit(1)
 
 $: s("hh*4").bank("KorgM1")
   .gain("[.3 .45 .35 .5]")
-  .swing(0.2)
+  .hpf(80)
+  .swing(2)
   .orbit(1)
 
-$: note("c2 [~ c2] e2 [~ g1]")
+$: note("<[c2 [~ c2] e2 [~ g1]] [c2 e2 [~ g1] c2] [c2 [~ c2] g1 [~ e2]] [e2 [~ c2] c2 [~ g1]]>")
   .s("gm_acoustic_bass")
   .lpf(500)
   .gain(0.38)
@@ -1384,7 +1425,7 @@ $: note("<[c3,e3,g3,b3] [f3,a3,c4,e4] [g3,b3,d4] [a3,c4,e4]>")
   .room(0.25)
   .orbit(3)
 
-$: note("c4 e4 g4 ~ e4 ~ c4 ~")
+$: note("<[c4 e4 g4 ~ e4 ~ c4 ~] [e4 g4 ~ c4 ~ e4 ~ g4] [c4 ~ g4 ~ e4 c4 ~ ~] [g4 ~ c4 e4 ~ g4 ~ c4]>")
   .s("gm_acoustic_guitar_nylon")
   .gain(0.12)
   .room(0.2)
@@ -1395,7 +1436,7 @@ $: s("crackle*4").density(0.06)
   .orbit(4)
 ```
 
-**Key rules:** this is jazz with a beat. Use `.swing(.2)` on all percussion. Vibraphone for chords (the chillhop signature). Walking bass with acoustic bass sound. The "solo" phase should feature the lead instrument more prominently. Crackle layer adds warmth.
+**Key rules:** this is jazz with a beat. Use `.swing(2)` on hats (`hh*4`), never on kick or snare. Vibraphone for chords (the chillhop signature). Walking bass with acoustic bass sound. The "solo" phase should feature the lead instrument more prominently. Crackle layer adds warmth.
 
 ---
 
@@ -1554,6 +1595,9 @@ $: s("hh*2")
 
 - **Never use `rand.range()` on gain.** Random volume per event causes audible skipping when values hit near-zero. Use fixed velocity patterns instead (e.g., `"[.3 .5 .4 .6]"`). `sine.range()` is acceptable because it oscillates smoothly and predictably.
 - **Lo-fi family: the beat never fully drops out.** In breakdowns, simplify the drum pattern or lower gain, but keep the beat playing. The beat drives lo-fi.
+- **Always `.hpf(80)` on drums** to keep sub frequencies clean for the bass. Apply to every kick, snare, clap, hat, rim, and percussion line.
+- **`.swing(N)` takes a subdivision integer** -- N = half the hat repetition count (`hh*8` -> `swing(4)`, `hh*16` -> `swing(8)`, `hh*4` -> `swing(2)`). Only apply swing to hi-hats, never to kick or snare. Never use fractional values like `.swing(.2)` -- that causes timing glitches.
+- **Use multi-cycle `<>` phrases** -- melodic elements (bass lines, melodies, arps) should have at least 4-cycle variation to avoid monotonous single-bar loops. Chord progressions already use `<>` in most templates. Exception: intentionally hypnotic genres (minimal techno, psytrance) can use 2-cycle variation.
 
 ### Gain Staging
 
@@ -1622,7 +1666,7 @@ $: s("hh*2")
 
 | Function | Purpose | Example |
 |----------|---------|---------|
-| `setcpm(N)` | Set tempo (cycles/min) | `setcpm(128/4)` |
+| `setcps(N)` | Set tempo (cycles/sec) | `setcps(128/60/4)` |
 | `s("X")` | Trigger sample | `s("bd sd")` |
 | `note("X")` | Play note | `note("c3 e3 g3")` |
 | `n("X")` | Note number | `n("0 4 7")` |
@@ -1683,7 +1727,7 @@ $: s("hh*2")
 | `.add(note("N"))` | Transpose | `.add(note("7"))` |
 | `.scale("X")` | Quantize to scale | `.scale("C:minor")` |
 | `.chop(N)` | Granular slice | `.chop(16)` |
-| `.swing(N)` | Swing amount | `.swing(0.1)` |
+| `.swing(N)` | Swing subdivision (integer: half of repetition count) | `.swing(4)` for `hh*8` |
 | `.speed(N)` | Playback speed | `.speed(0.5)` |
 | `.bank("X")` | Sample bank | `.bank("RolandTR909")` |
 | `.orbit(N)` | Output bus | `.orbit(1)` |
